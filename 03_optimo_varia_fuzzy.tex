@@ -1,0 +1,726 @@
+
+\chapter{Optimalizace, Variační počet, Fuzzy množiny}
+
+\section{Konečněrozměrná optimalizace lineárních úloh - základní pojmy}
+
+\subsection{Formulace úloh LP}
+\textbf{LP-problem}
+Minimalizace/ maximalizace lineární funkce při lineárních omezeních typu rovnost/ nerovnost.
+\newline $\mathbb{X}=(x_{1},...,x_{n})$... vektor řešení, označuje řešení optimálního problému
+\newline $z=f(\mathbb{X})$... účelová funkce, je funkce vektoru řešení. Extrém účelové funkce hledáme za určitých omezujících podmínek, které ovlivňují velikost složek vektoru řešení.
+\begin{enumerate}
+\item[a)] omezující vlastní podmínky
+\item[b)] podmínky nezápornosti (platí pro všechny složky vektoru řešení)
+\end{enumerate}
+
+\subsection{Matematická formulace}
+Na množině nezáporných řešení soustavy lineárních rovnic 
+$$ a_{11}x_{1}+a_{12}x_{2}+...+a_{1n}x_{n}=b_{1}$$
+$$a_{m1}x_{1}+a_{m2}x_{2}+...+a_{mn}x_{n}=b_{m}$$
+najděte extrém lineární funkce
+$$z=c_{1}x_{1}+c_{2}x_{2}+...+c_{n}x_{n}$$
+\textbf{Zjednodušený zápis:}
+$$Ax=b$$
+$$x\geq 0$$
+$$min\; c^{T}x$$
+Standardní tvar:
+minimalizace:
+$$min\; \; \sum_{j=1}^{n}c_{j}x_{j}$$
+$$ s.t. \; \; \sum_{j=1}^{n}a_{ij}x_{j}\geq b_{i}$$
+$$ x_{j}\geq 0 $$
+maximalizace
+$$max\; \; \sum_{j=1}^{n}c_{j}x_{j}$$
+$$ s.t. \; \; \sum_{j=1}^{n}a_{ij}x_{j}\leq b_{i}$$
+$$ x_{j}\geq 0 $$
+
+\subsection{Základní pojmy}
+
+\textbf{Konvexní množina}
+$X\subset \mathbb{R}^{n}$ je konvexní množina, pokud pro $\forall x_{1},x_{2}\in X$ platí
+$$\lambda \, x_{1}+(1-\lambda )\, x_{2}\in X\; \; \; \; \; \forall \lambda \in \left \langle 0,1 \right \rangle$$
+Geometricky: množina X spolu s libovolnými 2 různými body musí obsahovat i úsečku, která tyto 2 body spojuje
+
+\textbf{Polyedrická množina}
+Polyedrické množiny a kužel reprezentují speciální případ konvexních množin a kuželů.
+Polyedrická množina - průnik konečného počtu uzavřených poloprostorů 
+$$\left \{ y: Ax\leq b \right \}$$
+A...$m\, \texttt{x}\, n$ matice, b... vektor m proměnných
+\newline Je možné reprezentovat pomocí konečného počtu lineárních rovnice anebo nerovnic
+$$\exists k\in \mathbb{N},\; \exists \alpha _{i }\; ,\; \exists p_{i}\in \mathbb{R}^{n}\; ,\; p_{i}\neq 0$$
+$$S=\bigcap_{i=1}^{k}\; \left \{ x\; |\; p_{i}^{T}x\leq \alpha _{i} \right \}$$
+
+\textbf{Konvexní kombinace}
+$x_{1},...,x_{n}\; \in \mathbb{R}^{n}\; \; \; a\; \; \; t_{1},...t_{n}$ jsou reálná čísla taková, že
+\begin{enumerate}
+\item[a)] $t_{i}\geq 0\; \; pro\; \; i=1,...,n$
+\item[b)] $t_{1}+...+t_{n}=1$
+\end{enumerate}
+Potom vektor $ y=t_{1}x_{1}+...+t_{n}x_{n}$ se nazývá konvexní kombinací vektoru $x_{1},...,x_{n}$
+Pokud $t_{i}\in \mathbb{R}$... afinní kombinace 
+\newline Pokud $t_{i}\in \mathbb{R}\; \; a\; \; t_{1}+...+t_{n}\neq 1$... lineární kombinace
+
+\textbf{Vlastnosti konvexních množin}
+
+$S_{1},S_{2}\in \mathbb{R}^{n} $ konvexní $\rightarrow $ $S_{1}\cap S_{2}$, $S_{1}\oplus S_{2}$,$S_{1}\ominus S_{2}$ jsou také konvexní 
+
+\textbf{Konvexní obal}
+$S\in \mathbb{R}^{n},x\in \mathbb{R}^{n}$ patří do konvexního obalu $S\Leftrightarrow \exists k\in \mathbb{N},\; \exists \lambda _{1},...,\lambda _{n}\geq 0,\; \sum_{1}^{k}\lambda _{j}=1,\; \; \; \; \exists x_{1},...,x_{k}\in S:\; x=\sum_{j=1}^{k}\lambda _{j}x_{j}$ 
+\newline příklad: Konvexní obal kružnice je kruh, pokud je množina S konvexní, potom je rovná (svému) konvexnímu obalu S.
+\newline Konvexní obal je průnikem všech konvexních množin obsahujících S
+
+\textbf{Nadrovina}
+
+$\alpha \in \mathbb{R},\; p\in \mathbb{R}^{n},\; p\neq 0$. Nadrovina v $\mathbb{R}^{n} $: $H=\left \{ x\in \mathbb{R}^{n}|\; p^{T}x=\alpha  \right \} $
+\newline -definuje 2 (otevřené/uzavřené) poloprostory:
+$$H^{+}=\left \{ x\in \mathbb{R}^{n}|\; p^{T}x> (\geq )\alpha  \right \}$$
+$$H^{-}=\left \{ x\in \mathbb{R}^{n}|\; p^{T}x< (\leq )\alpha  \right \}$$
+
+\textbf{Oddělující nadrovina}
+$S_{1},S_{2}\in \mathbb{R}^{n}\neq \o ,\; \; \; H=\left \{ x\; |\; p^{T}x=\alpha  \right \}$
+\newline $H$ odděluje $S_{1}$ a $S_{2}\Leftrightarrow \exists i\in \left \{ 1,2 \right \}:(\forall x\in S_{i}:p^{T}x\geq \alpha )\wedge (\forall x\in S_{3-i}:p^{T}x\leq \alpha ) $  
+\newline Pokud navíc $S_{1} \cup S_{2} = H\Rightarrow $ odděluje řádně.
+\newline H striktně odděluje $S_{1}, S_{2}\Leftrightarrow \exists i\in \left \{ 1,2 \right \}:(\forall x\in S_{i}:p^{T}x>  \alpha )\wedge (\forall x\in S_{3-i}:p^{T}x<  \alpha )$
+\newline H silně odděluje $S_{1}, S_{2}\Leftrightarrow \exists i\in \left \{ 1,2 \right \}; \exists \epsilon > 0 :(\forall x\in S_{i}:p^{T}x\geq   \alpha +\epsilon )\wedge (\forall x\in S_{3-i}:p^{T}x\leq   \alpha )$
+Pozn.: $S\subset \mathbb{R}^{n} $ uzavřená + konvexní $ \Rightarrow S$ je průnik poloprostorů obsahující S
+
+
+
+\textbf{Opěrná nadrovina}
+
+$$ S\subset \mathbb{R}^{n}\neq \varnothing \; ,\; \bar{x} \in \partial S,\; \; \; H=\left \{ x\; |\; p^{T}(x-\bar{x})=0 \right \} $$ 
+je opěrná nadrovina
+$$ S\; \; v\; \; \bar{x} \Leftrightarrow S\subset H^{+}\; \vee \; S\subset H^{-}$$
+
+
+\textbf{Kužel}
+
+$C\subset \mathbb{R}^{n}$ je kužel s vrcholem 0, pokud $x \in C \Rightarrow \forall \lambda \geq 0: \; \lambda x \in C$ 
+\newline S vektorem leží v lineární kombinaci.
+
+\textbf{Polární kužel}
+$ S\subset \mathbb{R}^{n}\neq \O $, potom polární kužel S označíme $polS$ nebo $S^{*}$, a $polS=\left \{  p\; |\; \forall x\in S_{i}:p^{T}x\leq  0 \right \}$
+
+
+
+
+\textbf{Extrémní bod}
+$ S\subset \mathbb{R}^{n}; S\neq \O $ konvexní, $x\in S$ je krajní bod $S\Leftrightarrow \forall x_{1},x_{2}\in S:\forall \lambda \in (0,1): x=\lambda x_{1}+(1-\lambda )x_{2}\Rightarrow x=x_{1}=x_{2}$
+\newline Krajní bod není možné vyjádřit jako konvexní kombinaci 2 různých bodu 
+
+\textbf{Směr}
+$ S\subset \mathbb{R}^{n}\neq \O $ uzavřená, konvexní 
+\newline $d\in \mathbb{R}^{n}, d\neq \o $ je směr $s\Leftrightarrow \forall x\in S, \forall \lambda \geq 0: x+\lambda d\in S$
+\newline Pokud přičítám nezáporný násobek směru k jakémukoliv x, zůstanu v této množině
+
+
+\textbf{Krajní směr}
+Směr $d$ množiny $S$ je krajní $\Leftrightarrow (\forall d_{1},d_{2} $ směry $S$,$ \forall \lambda _{1},\lambda _{2}> 0:d=\lambda _{1}d_{1}+\lambda_{2}d_{2}\Rightarrow \exists \alpha > 0:d_{1}=\alpha d_{2})$
+\newline Není možné vyjádřit jakou kladnou lineární kombinaci dvou různých směrů dané množiny
+
+
++ příklad na Krajní body a Krajní směry 
+
+\section{Konečnorozměrná optimalizace lineárních úloh - metody řešení}
+reprezentace mnoziny pripustnych reseni, podminky optimality, simplexova metoda
+
+\section{Konečnorozměrná optimalizace nelin. úloh - základní pojmy}
+\textbf{Definition}: A set $C \in E^{n}$ is said to be \textit{convex} if $\forall x_{1},x_{2} \in C$ and $\forall \alpha \in \mathbf{R}, 0 < \alpha  < 1$, the point $\alpha x_{1} + (1 - \alpha) x_{2} \in C$.
+
+\textbf{Note: Geometrical expression of convex sets} \\
+A set is convex if, given two points in the set, every point on the line segment joining these two
+points is also a member of the set.
+
+\textbf{Proposition}: Convex sets in $E^{n}$ satisfy the following relations:
+\begin{enumerate}
+\item If C is a convex set and $\beta$ is a real number, the set
+ $\beta C = \{ \textbf{x}: \textbf{x} = \beta \textbf{c}, \textbf{c} \in C\}$
+is convex.
+\item If C and D are convex sets, then the set
+$ C + D = \{ \textbf{x}: \textbf{x} = \textbf{c} + \textbf{d}, \textbf{c} \in C\, \textbf{d} \in D\}$
+is convex.
+\item The intersection of any collection of convex sets is convex.
+\end{enumerate}
+
+\textbf{Theorem: (Equivalence of extreme points and basic solutions)}. Let \textbf{A} be an
+$m\times n$ matrix of rank m and \textbf{b} an m-vector. Let \textbf{K} be the convex polytope
+consisting of all n-vectors x satisfying
+
+\begin{align*}
+\textbf{Ax} = \textbf{b} \\
+\textbf{x} \geq \textbf{0}
+\end{align*}
+
+A vector \textbf{x} is an extreme point of \textbf{K} if and only if \textbf{x} is a basic feasible solution
+to (1).
+
+\textbf{Corollary}:
+\begin{itemize}
+\item If the convex set \textbf{K} corresponding to (1) is nonempty, it has at
+least one extreme point.
+\item If there is a finite optimal solution to a linear programming
+problem, there is a finite optimal solution which is an extreme point of the
+constraint set.
+\item The constraint set \textbf{K} corresponding to (1) possesses at most a
+finite number of extreme points.
+\item If the convex polytope \textbf{K} corresponding to (1) is bounded, then \textbf{K}
+is a convex polyhedron, that is, \textbf{K} consists of points that are convex
+combinations of a finite number of points.
+\end{itemize}
+
+
+
+
+\subsection{formulace úloh NLP}
+
+The \textit{mathematical program} (MP) is formulated as:
+
+\begin{align*}
+min \quad&  g_{0}(x) \\
+s.t.\quad &  g_{i}(x) \geq 0, i=1,...,m\\
+&  x \in X \subset \mathbf{R}^{n}
+\end{align*}
+
+where the set X and the functions $g_{i}: \mathbf{R}^n \rightarrow \mathbf{R}, i=1,...,m$ are given by modeling process. Depending on the properties of the problem defining functions $g_{i}$ and the
+set X, MP is called
+\begin{itemize}
+\item \textit{linear}, if the set X is convex polyhedral and the functions $g_{i}, i = 0,...,m$
+are linear
+\item \textit{nonlinear}, if at least one of the functions $g_{i}, i = 0,...,m$ is nonlinear or
+X is not a convex polyhedral set; among nonlinear programs, we denote
+a program as
+\begin{itemize}
+\item \textit{convex}, if $X \cap \{x: g_{i}(x) \geq  0; i = 1, ..., m\}$ g is a convex set and $g_{0}$ is
+a convex function (in particular if the functions $g_{i}; i = 0, ..., m$ are
+convex and X is a convex set); and
+\item \textit{nonconvex}, if either $X \cap \{x: g_{i}(x) \geq  0; i = 1, ..., m\}$ g is not a convex
+set or the objective function $g_{0}$ is not convex.
+\end{itemize}
+\end{itemize}
+
+\textbf{lemma}: If MP is a convex program then any local (i.e. relative)
+minimum is a global minimum.
+
+\section{Konečnorozměrná optimalizace lin. úloh - metody řešení}
+
+\subsection{Karush-Kuhn-Tuckerovy podmínky existence extrémů a jejich geometrická interpretace}
+
+KKT optimality conditions were independently derived by Karush in 1939 and by Kuhn{Tucker in 1951.
+\newline
+KKT conditions are the extension of FJ conditions (Fritz John Conditions for Inequality Constraints) with positive
+Lagrange multiplier $u_{0}$ corresponding to the term $\nabla f$. In following, we can suppose that
+$u_{0} = 1$ without loss of generality, since other Lagrange multipliers $u_{i}$ are just rescaled.
+\bigskip
+
+\textbf{Theorem (Karush-Kuhn-Tucker Necessary Optimality Conditions)}. \newline
+Consider the problem: 
+
+\begin{align*}
+\mbox{min } \quad  f(x)\\
+\mbox{s.t. } \quad g_{i}(x) \leq 0, \quad i = 1, ..., m,\\
+x \in X,
+\end{align*}
+
+where $X$ is a nonempty open set in $\mathbf{E}^{N}$. Hence the feasible set $S$ is specified by 
+$$S = \{x \in X, g_{i}(x) \leq 0, \forall i = 1, ..., m,\} $$
+
+Let $X$ be a nonempty open set in $\mathbf{E}^{N}$, $f$ and $g_{i}$ $\forall i = 1, ..., m$ be
+functions $f$, $g_{i}: \mathbf{E}^{N} \rightarrow \mathbf{E}$, the set $I$ be defined by 
+\begin{align*}
+I = \{i \in \{1,...,m\}:g_i(\overline{x})=0\}
+\end{align*}
+and $\overline{x}$ be a feasible point. Assume
+that the functions $f$ and $g_{i}$ for all $i \in I$ are differentiable at point $\overline{x}$, the functions $g_{i}$ for
+all $i \notin I$ are continuous at the point $\overline{x}$ and the gradients $\nabla g_{i}(\overline{x})$ for all $i \in I$ are linearly independent. If the point $\overline{x}$ is a local minimum to the problem (3), then there exist
+numbers $u_{i}$ for all $i \in I$ such that
+
+\begin{align*}
+\nabla f(\overline{x}) + \sum_{i \in I} u_{i} \nabla g_{i}(\overline{x}) = 0, \\
+u_{i} \geq 0 \quad \forall i \in I.
+\end{align*}
+
+If $g_{i}$ for all $i \notin I$ are also differentiable at point $\overline{x}$, then (5) can be rewritten to the
+equivalent form
+
+\begin{align*}
+\nabla f(\overline{x}) + \sum_{i = 1}^{m} u_{i} \nabla g_{i}(\overline{x}) = 0, \\
+u_{i}g_{i}(\overline{x}) = 0 \quad \forall i=1,...,m,\\
+u_{i} \geq 0 \quad \forall i=1,...,m.
+\end{align*}
+
+The scalars $u_{i}$ are called the \textit{Lagrange multipliers}, as in the FJ conditions. Similarly,
+the condition of feasibility of $\overline{x}$ is called the \textit{primal feasibility condition}, the conditions
+$\nabla f(\overline{x}) + \sum_{i=1}^{m} u_{i} \nabla g_{i}(\overline{x}) = 0$ with $u_{i} \geq 0$ for all $i = 1,...,m$ are called the \textit{dual feasibility conditions} and the requirement $u_{i}g_{i}(\overline{x}) = 0$ for all $i = 1,...,m$ is called the 
+\textit{complementary slackness condition}. The primal feasibility, dual feasibility and complementary
+slackness conditions together are called the Karush-Kuhn-Tucker optimality conditions.
+A point $\overline{x}$ is said to be a \textit{Karush-Kuhn-Tucker (KKT) point} if there exist Lagrange
+multipliers $\overline{u}_{1}, ..., \overline{u}_{m}$ such that the point $\overline{x}$ with $\overline{u}_{1}, ..., \overline{u}_{m}$ satisfies the Karush-Kuhn-Tucker optimality conditions.
+\bigskip
+
+\textbf{Theorem (Karush-Kuhn-Tucker Suffcient Optimality Conditions)}. 
+Consider the problem (3). Let $X \subset \mathbf{E}^{N}$ be a nonempty open set, $f$ and $g_{i}$ for all $i = 1,...,m$ be
+functions $f, g_{i}: \mathbf{E}^{N} \rightarrow \mathbf{E}$, the set $I$ be defined by (4) and a point $\overline{x}$ be a KKT point.
+Define the set $S$ by
+$$S = \{ x \in X: g_{i}(x) \leq 0, i \in I \} $$
+If there exists an $\varepsilon $-neighborhood $N_{\varepsilon}(\overline{x}), \varepsilon > 0$ such that $f$ is pseudoconvex over $N_{\varepsilon}(\overline{x}) \cap S$
+and $g_{i}$ for $i \in I$ are differentiable at $\overline{x}$ and are quasiconvex$^{1}$ over $N_{\varepsilon}(\overline{x}) \cap S$, 
+then the point $\overline{x}$ is a local minimum to the problem (3).
+
+\textbf{footnote$^{1}$}: A function $f: S \subset \mathbf{E}^{N} \mapsto \mathbf{E}$ is said to be \textit{quasiconvex}, if for all 
+$x_{1}, x_{2} \in S$ it holds
+$$ f(\lambda x_{1} + (1-\lambda )x_{2}) \leq max\{ f(x_{1}),f(x_{2})\} \quad  \forall \lambda \in (0,1) $$
+
+\textbf{Note}: Note that the set $S$ is, as in Fritz John Suffcient Optimality Conditions, the relaxation of the feasible region of (3)
+since all non-active constraints $g_{i}$ are taken out. Also note that it can be shown that if $f$
+and $g_{i}$ are convex at the point $\overline{x}$, then KKT conditions (6) are suffcient.
+
+\subsection{Základní numerické algoritmy}
+
+
+\section{Řešení úloh variačního počtu}
+
+\subsection{Minimalizace funkcionálu}
+Jde o minimalizaci funkcionálu, který je ve formě integrálu $J=\int_{a}^{b}L(x,y,{y}')dx $. Chceme zjistit, pro jaké $y$ nabývá $J$ minimální hodnoty. 
+Řekneme, že funkce $y$ realizuje minimum funkcionálu $J$, pokud pro $\forall y+\epsilon \eta  $, kde $\epsilon $ je reálné kladné nebo záporné číslo (ne 0).
+\newline $\eta (x)$ je funkce taková, že $\eta (a)=\eta (b)=0\; \; \; \; ,\eta \not\equiv 0$
+\newline $J:C^{1}\left \langle a,b \right \rangle\rightarrow \mathbb{R}$ hladká spojitá funkce s 1. derivací
+\newline Platí $J(y+\epsilon \eta )-J(y)> 0$
+\newline Dále $J(y+\epsilon \eta )-J(y)=\int_{a}^{b}L(x,y+\epsilon \eta ,{y}'+\epsilon {\eta }')dx-\int_{a}^{b}L(x,y,{y}')dx=...Taylor\; \;  rozvoj...=\epsilon J_{1}+\frac{1}{2}\epsilon ^{2}J_{2}+O(\epsilon ^{3})$
+\newline Nutná podmínka extrému: $J_{1}=0$... vyšetření 1. variace
+\newline Postačující podmínka minima: $J_{1}=0,\; J_{2}> 0$... vyšetření 2. variace
+
+\subsection{Základní lemma variačního počtu}
+
+Je dána spojitá funkce na $\left \langle a,b \right \rangle$ ozn. $\Phi (x)$. Pokud pro každou funkci $\eta (x)$ spojitou na $\left \langle a,b \right \rangle$ platí $\int_{a}^{b}\Phi (x)\eta (x)dx=0$, potom $\Phi (x)=0$.
+ Důkaz sporem.
+
+\subsection{Eulerova rovnice}
+$$J_{1}=0,\; \; J_{1}=\int_{a}^{b}(\eta\frac{\partial L}{\partial y} +{\eta }'\frac{\partial L}{\partial {y}'})dx$$
+$$J_{1}=\int_{a}^{b}(\eta\frac{\partial L}{\partial y} +{\eta }'\frac{\partial L}{\partial {y}'})dx=0...per\; \; partes...\Rightarrow \int_{a}^{b}\eta (\frac{\partial L}{\partial y}-\frac{\mathrm{d} }{\mathrm{d} x}\frac{\partial L}{\partial {y}'})dx=0$$
+má být splněno pro $\forall \eta $, proto podle základního lemmatu můžeme psát:
+$$\frac{\partial L}{\partial y}-\frac{\mathrm{d} }{\mathrm{d} x}\frac{\partial L}{\partial {y}'}=0$$
+řešení tohoto problému jsou stacionární křivky
+
+
+\subsection{Druhá variace}
+
+$$J_{2}=\int_{a}^{b}(\eta ^{2}P+2\eta {\eta }'Q+{\eta }'^{2}R)dx$$
+, kde $P=\frac{\partial^2 L}{\partial y^2} $, $Q=\frac{\partial^2 L}{\partial y\partial {y}'} $, $R=\frac{\partial^2 L}{\partial {y}'^2} $. 
+\newline $J_{2}> 0$ pro minimum 
+\newline $J_{2}< 0$ pro maximum
+\newline Použitím množství technických lemmat ukážeme, že znaménko u $R=\frac{\partial^2 L}{\partial {y}'^2} $ je pro znaménko $J_{2}$ rozhodující.
+Na to, aby se dokázalo, že $y$ realizuje minimum (resp. maximum) se používá Legendrov test: 
+  \begin{enumerate}
+\item[1)] pro funkci $y$ je splněna Eulerova rovnice
+\item[2)] $\left \langle a,b \right \rangle$ je dostatečně malý interval
+\item[3)] $\frac{\partial^2 L}{\partial {y}'^2}>0$ nemění znaménko na $(a,b)$
+
+\end{enumerate}
+Pozn.: Pokud jsou a, b dostatečně blízko $\rightarrow$ Konjugované body
+
+\subsection{Konjugované body}
+
+První konjugovaný bod $A^{*}$ k bodu $A$.
+\newline 2 možnosti:
+  \begin{enumerate}
+\item[-] $A^{*}$ je před $B \rightarrow$ extrém nenastává
+\item[-] $A^{*}$ je za $B \rightarrow$ extrém může nastat \begin{enumerate}
+\item[a)] $R$ nemění znaménko na $\left \langle a,b \right \rangle \rightarrow$ jde o extrém
+\item[b)] $R$ mění znaménko na $\left \langle a,b \right \rangle \rightarrow$ není to extrém 
+\end{enumerate}
+
+\end{enumerate}
+
+Analytický způsob hledání konjugovaných bodů:
+$$ \frac{\frac{\partial y}{\partial c_{1}}(a)}{\frac{\partial y}{\partial c_{2}}(a)}=\frac{\frac{\partial y}{\partial c_{1}}(x)}{\frac{\partial y}{\partial c_{2}}(x)}$$
+$y$- obecné řešení, $a$- z okrajových podmínek. Řešením je $x\neq a$
+
+\subsection{Aplikace}
+\begin{enumerate}
+\item[-]Minimální plochy - rotace křivky kolem osy x. Zobecnění - napínání plochy na křivku tak, aby byl obsah minimální
+\item[-]Geodetiky - křivky na ploše, spojuji body tak, aby délka křivky na ploše byla minimální
+\item[-]Balistická křivka
+\item[-]Řetězovka
+\item[-]Gaussova funkce
+\end{enumerate}
+
+\section{Optimální řízení dynamických systémú}
+
+\textit{Přípustné a optimální regulace, základní úloha optimálního řízení, princip maxima, podmínky transverzality, aplikace}\\
+
+\begin{definition}
+Vektorový prostor $X$ je \textit{stavový (fázový) prostor} proměnných $x(t)=(x_1(t),...x_n(t))$, který popisuje pohyb objektu v čase. Předpokladáme regulovatelnost pohybu.
+\end{definition}
+\begin{definition}
+Vektorová proměnná $u(t)=(u_1(t),...u_n(t))$ definována na nejakém intervalu $[t_0,t_1]$ se nazývá \textit{regulace}. Její obor hodnot $U$ se nazývá \textit{obor regulace}. $U$ je uzavřená podmnožina Euklidovského prostoru.
+\end{definition}
+
+\section{ Fuzzy množiny}
+základní pojmy, inkluze a operace, t-normy a t-konormy, silná negace, alfa řezy, princip rozšíření, reálná fuzzy čísla a operace
+
+\subsection{Základní pojmy, inkluze a operace, alfa řezy}
+
+\begin{definition}
+Nechť $X \neq \emptyset$ je množina a $\muA: X \rightarrow \langle 0;1 \rangle$ je zobrazení. \textbf{Fuzzy množinou} $\fA$ na $X$ rozumíme množinu všech uspořádaných dvojic $\lbrace (x, \muA(x)); x \in X, \muA(x) \in \langle 0;1 \rangle \rbrace$ a píšeme $\fA = (X; \muA)$. Množina $X$ je \textbf{univerzum}, zobrazení $\muA$ je \textbf{funkce příslušnosti} fuzzy množiny $\fA$ a $\muA(x)$ je \textbf{stupeň příslušnosti} prvku $x$ k $\fA$ pro $\forall x \in X$.
+\end{definition}
+
+\begin{remark}
+Zobrazení $\muA$ je definováno pro $\forall x \in X$. Pro $x \notin \fA$ klademe $\muA(x)=0$.
+\end{remark}
+
+\begin{definition}
+\textbf{Nosičem (základem)} fuzzy množiny $\fA$ rozumíme množinu supp $\fA = \lbrace x \in X; \muA(x) > 0 \rbrace$.
+\end{definition}
+
+\begin{definition}
+\textbf{Jádrem} fuzzy množiny $\fA$ rozumíme množinu ker $\fA = \lbrace x \in X; \muA(x) = 1 \rbrace$.
+\end{definition}
+
+\begin{definition}
+\textbf{Výškou} fuzzy množiny $\fA$ rozumíme množinu hgt $\fA = \sup\limits_{x \in X} \muA(x)$.
+\end{definition}
+
+\begin{definition}
+Fuzzy množina $\fA$ je \textbf{normální}, jestliže $\exists x \in X$ takové, že $\muA(x) = 1$.
+\end{definition}
+
+\begin{definition}
+Fuzzy množina $\fA$ je \textbf{podmnožinou} fuzzy množiny $\fB$ a píšeme $\fA \subset \fB$, jestliže $\muA(x) \leq \muB(x)$ pro $\forall x \in X$.
+\end{definition}
+
+\begin{definition}
+Fuzzy množiny $\fA$ a $\fB$ jsou si \textbf{rovny} a píšeme $\fA = \fB$, jestliže $\muA(x) = \muB(x)$ pro $\forall x \in X$.
+\end{definition}
+
+\begin{definition}
+\textbf{Průnik} fuzzy množin $\fA$ a $\fB$ je fuzzy množina $\fA \cap \fB$, kde
+\begin{equation*}
+\mu_{\fA \cap \fB}(x) = \min \lbrace \muA(x), \muB(x) \rbrace \text{ pro } \forall x \in X.
+\end{equation*}
+\end{definition}
+
+\begin{definition}
+\textbf{Sjednocení} fuzzy množin $\fA$ a $\fB$ je fuzzy množina $\fA \cup \fB$, kde
+\begin{equation*}
+\mu_{\fA \cup \fB}(x) = \max \lbrace \muA(x), \muB(x) \rbrace \text{ pro } \forall x \in X.
+\end{equation*}
+\end{definition}
+
+\begin{definition}
+\textbf{Doplňkem} fuzzy množiny $\fA$ rozumíme fuzzy množinu $\overline{\fA}$, kde
+\begin{equation*}
+\mu_{\overline{\fA}}(x) = 1 - \muA(x) \text{ pro } \forall x \in X.
+\end{equation*}
+\end{definition}
+
+\begin{theorem}
+Pro libovolné fuzzy množiny $\fA, \fB, \fC$ platí
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+$\fA \cap \fB = \fB \cap \fA$                                 & $\fA \cap \emptyset = \emptyset$                             \\
+$\fA \cup \fB = \fB \cup \fA$                                 & $\fA \cup \emptyset = \fA$                                   \\
+$\fA \cap (\fB \cap \fC) = (\fA \cap \fB) \cap \fC$           & $\fA \cap X = \fA$                                           \\
+$\fA \cup (\fB \cup \fC) = (\fA \cup \fB) \cup \fC$           & $\fA \cup X= X$                                              \\
+$\fA \cap \fA = \fA$                                          & $\overline{(\overline{\fA})} = \fA$                          \\
+$\fA \cup \fA = \fA$                                          & $\overline{\fA \cap \fB}=\overline{\fA} \cup \overline{\fB}$ \\
+$\fA \cap (\fB \cup \fC)= (\fA \cap \fB) \cup (\fA \cap \fC)$ & $\overline{\fA \cup \fB}=\overline{\fA} \cap \overline{\fB}$ \\
+$\fA \cup (\fB \cap \fC)= (\fA \cup \fB) \cap (\fA \cup \fC)$ &                                                             
+\end{tabular}
+\end{table}
+\end{theorem}
+
+
+\begin{remark}
+Operace $\cup, \cap$ rozšiřujeme pro libovolnou indexovou množinu $I$ pomocí vztahů
+\begin{equation*}
+\mu_{\bigcap\limits_{i \in I} \underset{^\sim}{A_i}}(x) = \inf_{\substack{i \in I}} \mu_{\underset{^\sim}{A_i}}(x), \qquad \mu_{\bigcup\limits_{i \in I} \underset{^\sim}{A_i}}(x) = \sup_{\substack{i \in I}} \mu_{\underset{^\sim}{A_i}}(x) \quad \text{ pro } \forall x \in X.
+\end{equation*}
+\end{remark}
+
+\begin{definition}
+\textbf{Součinem} fuzzy množin $\fA$ a $\fB$ rozumíme fuzzy množinu $\fA \cdot \fB$, kde
+\begin{equation*}
+\mu_{\fA \cdot \fB}(x) =  \muA(x) \cdot \muB(x) \text{ pro } \forall x \in X.
+\end{equation*}
+\end{definition}
+
+\begin{definition}
+\textbf{Součtem} fuzzy množin $\fA$ a $\fB$ rozumíme fuzzy množinu $\fA + \fB$, kde
+\begin{equation*}
+\mu_{\fA + \fB}(x) =  \muA(x) + \muB(x) - \muA(x) \cdot \muB(x) \text{ pro } \forall x \in X.
+\end{equation*}
+\end{definition}
+
+\begin{theorem}
+Pro libovolné fuzzy množiny $\fA, \fB, \fC$ platí
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+$\fA \cdot \fB = \fB \cdot \fA$                         & $\fA + \emptyset = \fA$                                    \\
+$\fA + \fB = \fB + \fA$                                 & $\fA \cdot X= \fA$                                           \\
+$\fA \cdot (\fB \cdot \fC) = (\fA \cdot \fB) \cdot \fC$ & $\fA + X = X$                                              \\
+$\fA + (\fB + \fC) = (\fA + \fB) + \fC$                 & $\overline{\fA \cdot \fB}=\overline{\fA} + \overline{\fB}$ \\
+$\fA \cdot \emptyset = \emptyset$                       & $\overline{\fA + \fB}=\overline{\fA} \cdot \overline{\fB}$
+\end{tabular}
+\end{table}
+\end{theorem}
+
+\begin{remark}
+Neplatí distributivita operací $\cdot, +$ ani idempotence. Operace $\cdot, +$ jsou distributivní vzhledem k $\cup, \cap$, nikoli naopak. Obecně platí
+\begin{equation*}
+\fA \cdot \fB \subset \fA \cap \fB \subset \fA \cup \fB \subset \fA + \fB.
+\end{equation*}
+\end{remark}
+
+\begin{definition}
+Nechť $m \in (0, \infty)$. \textbf{m-tou mocninou} fuzzy množiny $\fA$ rozumíme fuzzy množinu $\fA^m$, kde $\mu_{\fA^m}(x)=[\muA(x)]^m$ pro $\forall x \in X$.
+\end{definition}
+
+\begin{definition}
+Nechť $\alpha \in \langle 0, 1 \rangle$. {\boldmath$\alpha$}\textbf{-násobkem} fuzzy množiny $\fA$ rozumíme fuzzy množinu $\alpha\fA$, kde $\mu_{\alpha\fA}(x)=\alpha\muA(x)$ pro $\forall x \in X$.
+\end{definition}
+
+\begin{definition}
+Nechť $\alpha \in \langle 0, 1 \rangle$. {\boldmath$\alpha$}\textbf{-řezem} fuzzy množiny $\fA$ rozumíme obyčejnou množinu
+\begin{equation*}
+A_{\alpha} = \lbrace x \in X; \muA(x) \geq \alpha \rbrace.
+\end{equation*}
+\end{definition}
+
+\begin{theorem}
+Pro libovolné fuzzy množiny $\fA$ platí
+\begin{eqnarray*}
+\muA(x) &=& \sup_{\substack{\alpha \in (0;1\rangle}} \min \big(\alpha, \mu_{A_{\alpha}}(x)\big) \quad \text{ pro } \forall x \in X, \\
+\fA &=& \bigcup\limits_{\alpha \in \langle 0;1 \rangle} \alpha A_{\alpha}, \\
+\alpha_1 \leq \alpha_2 &\Rightarrow& A_{\alpha_2} \subset A_{\alpha_1}.
+\end{eqnarray*}
+\end{theorem}
+
+\begin{definition}
+Fuzzy množina $\fA$ je \textbf{konvexní}, jestliže jsou konvexní všechny její $\alpha$-řezy.
+\end{definition}
+
+\subsection{T-norma (trojúhelníková norma)}
+
+\begin{definition}
+Zobrazení $t:\langle 0,1\rangle \times \langle 0,1\rangle \rightarrow \langle 0,1\rangle$ se nazývá t-norma, splňuje-li následující podmínky:
+
+\begin{itemize}
+\item  t je neklesající v obou argumentech
+\item  $t(x,y)=t(y,x)$  $\forall x,y\in \langle 0,1 \rangle$ (komutativita)
+\item  $t(x,t(y,z))=t(t(x,y),z) $  $\forall x,y,z\in \langle 0,1 \rangle$ (asociativita)
+\item $t(1,x)=x$  $\forall x\in \langle 0,1 \rangle$ (hraniční podmínka)
+\end{itemize}
+\end{definition}
+
+Základní t-normy:
+\begin{itemize}
+\item Minimová: $T_M (x,y)=min\{x,y\}$,
+\item Součinová: $T_P (x,y)=xy$,
+\item Łukasiewiczova: $T_L (x,y)=max\{0,x+y-1\}$,
+\item Drastický součin: $T_D(x,y)=min\{x,y\}$ pokud $max\{x,y\}=1$ jinak $T_D(x,y)=0$.
+\end{itemize}
+
+
+
+\subsection{T-konorma (trojúhelníková konorma)}
+
+\begin{definition}
+Zobrazení $s:\langle 0,1\rangle \times \langle 0,1\rangle \rightarrow \langle 0,1\rangle$ se nazývá t-konorma, splňuje-li následující podmínky:
+\begin{itemize}
+\item  t je neklesající v obou argumentech
+\item  $s(x,y)=s(y,x)$  $\forall x,y\in \langle 0,1 \rangle$ (komutativita)
+\item  $s(x,s(y,z))=s(s(x,y),z) $  $\forall x,y,z\in \langle 0,1 \rangle$ (asociativita)
+\item $s(0,x)=x$  $\forall x\in \langle 0,1 \rangle$ (hraniční podmínka)
+\end{itemize}
+\end{definition}
+
+Příklady t-konormy:
+\begin{itemize}
+\item Maximová: $S_M (x,y)=max\{x,y\}$, 
+\item Pravděpodobnostní součet: $S_P(x,y)=x+y-xy$, 
+\item Łukasiewiczova: $S_L (x,y)=min\{1,x+y\}$,
+\item Drastický součet: $S_D(x,y)=max\{x,y\}$ pokud $min\{x,y\}=0$ jinak $S_D(x,y)=1$.
+\end{itemize}
+
+
+
+
+
+
+\subsection{Silná negace}
+\begin{definition}
+\textbf{Fuzzy negace} je libovolná funkce $n:\langle 0,1\rangle \rightarrow \langle 0,1\rangle$ s vlastnostmi:
+\begin{enumerate}
+\item $n(0) = 1, \quad n(1) = 0,$
+\item $\forall x,y \in \langle 0,1\rangle:  x<y \Rightarrow n(x) \geq n(y)$ (nerostoucí funkce). 
+\end{enumerate}
+\end{definition}
+
+\begin{definition}
+Fuzzy negace $n$, která je klesající a spojitá se nazývá \textbf{striktní fuzzy negace}.
+\end{definition}
+
+\begin{definition}
+Fuzzy negace $n$, která je involutivní, tj. $n(n(x))=x$ pro $\forall x \in \langle 0,1\rangle$, se nazývá \textbf{silná fuzzy negace}.
+\end{definition}
+
+\begin{remark}
+Funkci $n(x)=1-x, x \in \langle 0,1\rangle$ budeme nazývat \textbf{standardní fuzzy negací}. Je zřejmé, že tato fuzzy negace je striktní i silná.  
+\end{remark}
+
+\begin{theorem}
+Každá silná fuzzy negace je i striktní.
+\end{theorem}
+
+
+
+\subsection{Princip rozšíření}
+
+\begin{definition}
+Nechť $X_1 \times \ldots \times X_n$ je kartézský součin univerz $X_1, \ldots, X_n$ a $\underset{^\sim}{A_1} = (X_1, \mu_{\underset{^\sim}{A_1}}), \ldots, \underset{^\sim}{A_n} = (X_n, \mu_{\underset{^\sim}{A_n}})$ jsou fuzzy množiny. \textbf{Kartézský součin} fuzzy množin je fuzzy množina $\underset{^\sim}{A_1} \times \ldots \times \underset{^\sim}{A_n} = (X_1 \times \ldots \times X_n; \mu_{\underset{^\sim}{A_1} \times \ldots \times \underset{^\sim}{A_n}})$, kde
+\begin{equation*}
+\mu_{\underset{^\sim}{A_1} \times \ldots \times \underset{^\sim}{A_n}}(x_1, \ldots, x_n) = \min\lbrace \mu_{\underset{^\sim}{A_1}}(x_1), \ldots, \mu_{\underset{^\sim}{A_n}}(x_n) \rbrace \; \text{ pro } \forall(x_1, \ldots, x_n) \in X_1 \times \ldots \times X_n.
+\end{equation*}
+\end{definition}
+
+\begin{definition}[\textbf{Zadehův princip rozšíření}]
+Nechť $\underset{^\sim}{A_1} = (X_1, \mu_{\underset{^\sim}{A_1}}), \ldots, \underset{^\sim}{A_n} = (X_n, \mu_{\underset{^\sim}{A_n}})$ jsou fuzzy množiny a $f: X_1 \times \ldots \times X_n \rightarrow Y$ je zobrazení. Říkáme, že fuzzy množina $\fB = f(\underset{^\sim}{A_1}, \ldots, \underset{^\sim}{A_n})$ je \textbf{fuzzy hodnotou funkce f podle principu rozšíření}, jestliže
+\begin{equation*}
+\muB(y)=
+ \begin{cases}
+\sup\limits_{\substack{(x_1, \ldots, x_n) \\ f(x_1, \ldots, x_n)=y}} \min\lbrace \mu_{\underset{^\sim}{A_1}}(x_1), \ldots, \mu_{\underset{^\sim}{A_n}}(x_n) \rbrace, \\
+\bigskip
+\\
+ 0\qquad \text{ když }  f^{-1}(y) = \emptyset, 
+  \end{cases}
+\end{equation*}
+kde $f^{-1}(y)$ je množina všech $n$-tic $(x_1, \ldots, x_n)$ takových, že $y = f(x_1, \ldots, x_n)$.
+\end{definition}
+
+\begin{remark}\label{prosty-zadeh}
+Nechť $n=1$ a $f$ je prosté zobrazení. Pak pro $\fB = f(\fA)$ platí $\muB(y)=\muA(f^{-1}(y))$.
+\end{remark}
+
+
+
+\subsection{Reálná fuzzy čísla a operace}
+
+\begin{definition}
+Fuzzy množina $\fa = (\mathbb{R}, \mua)$ se nazývá \textbf{fuzzy číslo}, jestliže fuzzy množina $\fa$ je konvexní a normální a $\mua$ je po částech spojitá funkce. Jestliže existuje právě jedno $a \in \mathbb{R}$ takové, že $\mua(a)=1$, pak říkáme, že $a$ je \textbf{hlavní hodnota} fuzzy čísla $\fa$. Je-li funkce příslušnosti $\mua$ spojitá, říkáme, že $\fa$ je \textbf{spojité fuzzy číslo}. Množinu všech fuzzy čísel na $\mathbb{R}$ značíme $\mathcal{A}$. 
+\end{definition}
+
+\begin{definition}
+Nechť $\varphi$ je unární operace na $\mathbb{R}$. \textbf{Rozšířenou unární operací na} $\mathcal{A}$ rozumíme (podle principu rozšíření) operaci $\varphi(\fa), \fa \in \mathcal{A}$, kde $\mu_{\varphi(\fa)}(y) = \sup\limits_{\substack{x \\ \varphi(x)=y}} \mua(x)$. Pro $\varphi$ prosté viz poznámku \ref{prosty-zadeh}.
+\end{definition}
+
+\begin{definition}
+Je-li $\varphi(x)=-x$, pak $-\fa$ se nazývá \textbf{opačné fuzzy číslo} k fuzzy číslu $\fa$. Je-li $\varphi(x)=x^{-1}$, pak $\fa^{-1}$ se nazývá \textbf{inverzní fuzzy číslo} k fuzzy číslu $\fa$. Je-li $\varphi(x)=\lambda x, \lambda \in \mathbb{R}$, pak $\lambda \fa$ se nazývá {\boldmath$\lambda$}\textbf{-násobek fuzzy čísla} $\fa$. Je-li $\varphi(x)=e^{x}$, pak $e^{\fa}$ se nazývá \textbf{exponenciála fuzzy čísla} $\fa$. Říkáme, že fuzzy číslo $\fa$ je \textbf{kladné}, resp. \textbf{záporné}, jestliže $\mua(x)=0$ pro $\forall x < 0$, resp. $\forall x > 0$. Píšeme $\fa>0$, resp. $\fa < 0$.
+\end{definition}
+
+\begin{theorem}
+Nechť $\fa$ je fuzzy číslo. Pak platí:
+\begin{enumerate}
+\item $-\fa$ je fuzzy číslo a $\mu_{-\fa}(x)=\mua(-x), \forall x \in \mathbb{R}$.
+\item $\mu_{\fa^{-1}}(x) =
+	\begin{cases}
+		\mua(x^{-1}), \forall x \in \mathbb{R} - \lbrace 0 \rbrace, \\
+		0, \qquad x=0
+    \end{cases}$ \\
+    a pro $\fa > 0$ nebo $\fa < 0$ je $\fa^{-1}$ fuzzy číslo.
+\item $\lambda\fa$ je fuzzy číslo, přičemž pro $\lambda \neq 0$ je $\mu_{\lambda\fa}(x)=\mua(x/\lambda)$ a pro $\lambda = 0$ je $\mu_{\lambda\fa}(x) = \mu_{\lbrace 0 \rbrace}(x), \forall x \in \mathbb{R}$.
+\item $e^{\fa}$ je fuzzy číslo a $\mu_{e^{\fa}}(x) = \begin{cases}
+\mua(\ln{x}), x > 0, \\
+0, \quad x \leq 0.
+\end{cases}$
+\end{enumerate}
+\end{theorem}
+
+\begin{definition}
+Nechť $\ast$ je binární operace na $\mathbb{R}$. \textbf{Rozšířenou binární operací na} $\mathcal{A}$ rozumíme podle principu rozšíření operaci $\circledast$, přičemž
+\begin{equation*}
+\mu_{\fa \circledast \fb}(z) = \sup\limits_{\substack{x, y \\ x \ast y = z}} \min \lbrace \mua(x), \mub(y) \rbrace.
+\end{equation*}
+\end{definition}
+
+\begin{definition}
+Binární operace $\ast$ na $\mathbb{R}$ se nazývá \textbf{rostoucí}, resp. \textbf{klesající}, jestliže pro libovolné $x_1 > x_2$ a $y_1 > y_2$ platí $x_1 \ast y_1 > x_2 \ast y_2$, resp. $x_1 \ast y_1 < x_2 \ast y_2$.
+\end{definition}
+
+\begin{theorem}
+Nechť $\ast$ je spojitá rostoucí anebo klesající binární operace na $\mathbb{R}$ a $\fa, \fb$ jsou spojitá fuzzy čísla. Pak $\fa \circledast \fb$ je spojité fuzzy číslo a $\fa \circledast \fb = \bigcup\limits_{\alpha \in \langle 0; 1 \rangle} \alpha (a_{\alpha} \ast b_{\alpha})$, kde $a_{\alpha}, b_{\alpha}$ jsou $\alpha$-řezy fuzzy čísel $\fa, \fb$.
+\end{theorem}
+
+\begin{dusledek}
+Jsou-li $\fa, \fb$ spojitá fuzzy čísla a $\ast$ je spojitá binární operace na $\mathbb{R}$, pak platí
+\begin{equation*}
+\fa \circledast \fb =
+\begin{cases}
+\bigcup\limits_{\alpha \in \langle 0; 1 \rangle} \alpha \langle a_{1\alpha} \ast b_{1\alpha}; a_{2\alpha} \ast b_{2\alpha} \rangle \quad \text{pro $\ast$ rostoucí,}\\
+\bigcup\limits_{\alpha \in \langle 0; 1 \rangle} \alpha \langle a_{2\alpha} \ast b_{2\alpha}; a_{1\alpha} \ast b_{1\alpha} \rangle \quad \text{pro $\ast$ klesající.}
+\end{cases}
+\end{equation*}
+\end{dusledek}
+
+\begin{theorem}
+Nechť $\ast$ je binární operace na $\mathbb{R}$. Pak platí:
+\begin{enumerate}
+\item $\ast$ komutativní $\Rightarrow \circledast$ komutativní,
+\item $\ast$ asociativní $\Rightarrow \circledast$ asociativní,
+\item $\circledast$ je distributivní vzhledem k $\cup$.
+\end{enumerate}
+\end{theorem}
+
+\begin{dusledek}
+Protože $+$ je spojitá rostoucí binární operace na $\mathbb{R}$, je rozšířený součet $\oplus$ spojitých fuzzy čísel spojité fuzzy číslo. Platí $-(\fa \oplus \fb) = (-\fa) \oplus (-\fb)$. $\oplus$ je komutativní a asociativní, avšak obecně neplatí $\fa \oplus (-\fa) = 0$.
+\end{dusledek}
+
+\begin{dusledek}
+Protože násobení $\cdot$ je spojitá operace, která je rostoucí na $\mathbb{R}^+$ a klesající na $\mathbb{R}^-$, je rozšířený součin $\otimes$ kladných anebo záporných spojitých fuzzy čísel spojité fuzzy číslo. Platí $-(\fa) \otimes \fb = -(\fa \otimes \fb)$. $\otimes$ je komutativní a asociativní, avšak obecně neplatí $\fa \otimes \fa^{-1} = 1$.
+\end{dusledek}
+
+\begin{theorem}
+Nechť $\fa$ je kladné anebo záporné spojité fuzzy číslo, $\fb, \fc$ spojitá fuzzy čísla. Pak je $\fa \otimes (\fb \otimes \fc) \subset (\fa \otimes \fb) \oplus (\fa \otimes \fc)$. Jsou-li $\fb, \fc$ současně kladná anebo záporná spojitá fuzzy čísla, je $\fa \otimes (\fb \oplus \fc)$ spojité fuzzy číslo a platí $\fa \otimes (\fb \otimes \fc) = (\fa \otimes \fb) \oplus (\fa \otimes \fc)$.
+\end{theorem}
+
+\section{Lagrangeovský a Hamiltonovský formalizmus variačného počtu}
+
+\section{Lineární úloha časové optimalizace}
+
+\section{Aplikace fuzzy množin}
+T-normy, konormy; unární, bin operace; fuzzy cisla; fuzzy relace; fuzzy regulace
+\subsection{T-norma}
+Funkce T: $\langle0,1\rangle^2\mapsto\langle0,1\rangle$ se nazývá \textbf{TROJUHELNÍKOVÁ NORMA} (t-norma), když pro každé x,y,z: 
+
+\begin{itemize}
+\item[-]{$T(x,y)=T(y,x)$}
+\item[-]{$T(x,T(y,z))=T(T(x,y),z)$}
+\item[-]{$T(x,y)\leq T(x,z)\quad \text{když} \quad y\leq z$}
+\item[-]{$T(x,1)=x$}
+\end{itemize}
+
+\subsection{T-konorma}
+Funkce S: $\langle0,1\rangle^2\mapsto\langle0,1\rangle$ se nazývá \textbf{TROJUHELNÍKOVÁ KONORMA} (t-norma), když pro každé x,y,z: 
+
+\begin{itemize}
+\item $S(x,y)=S(y,x)$
+\item $S(x,S(y,z))=S(S(x,y),z)$
+\item $S(x,y) \leq S(x,z)\quad \text{když} \quad y\leq z$
+\item $S(x,0)=x$
+\end{itemize}
+
+\subsubsection{VĚTA}
+Funkce S je t-konorma právě když 
+$S(x,y)=1-T(1-x,1-y)$, kde T je t-norma.
+\subsection{fuzzy relace}
+Binární relaci R z množiny $\mathbb{X}$ do množiny $\mathbb{Y}$ je jakákoliv podmnožina R kartézského součinu $\mathbb{X}\times\mathbb{X}$. $R\subseteq\mathbb{X}\times\mathbb{X}$
+\subsection{fuzzy čísla}
+\subsubsection{aritmetické operace s fuzzy čísly pomocí $\alpha$-řezů}
+Pro libovolné fuzzy množiny \textit{A} platí: $A=\bigcup\limits_{\alpha \in <0,1>} \alpha A_{\alpha}$
+tento princip využijeme při počítání aritmetických operací $\alpha$-řezů. 
+Nechť $\ast$ je libovolná operace +, -, /, $\cdot$. Příslušné operace s intervaly jsou definovány $$\langle a,b \rangle \circledast \langle c,d\rangle= \left \{ u\ast v\,|\, u \in \langle a,b\rangle \wedge v \in \langle c,d\rangle \right \}$$ z čehož definujeme operace:$\langle a,b \rangle \oplus \langle c,d\rangle = \langle a+c,b+d\rangle $, $\langle a,b \rangle \ominus \langle c,d\rangle = \langle a-c,b-d\rangle $, $\langle a,b \rangle \odot \langle c,d\rangle = \langle min(ac, ad, bc, bd),max(ac, ad, bc, bd)\rangle $ a $\langle a,b \rangle \oslash \langle c,d\rangle = \langle a,b \rangle \odot \langle 1/c,1/d\rangle $.
+Příklad: Mějme součin fuzzy čísel A=(1,1,1) a B=(3,1,2).(Rozuměj délka ramena vlevo, support, délka ramena vpravo.)
+$A^{(\alpha)}=\langle \alpha, 2-\alpha \rangle$, $B^{(\alpha)}=\langle 2 + \alpha, 5-2\alpha \rangle$. Součiny jsou tedy $s_1^{(\alpha)}=\alpha^2 +2\alpha$, $s_2^{(\alpha)}=4-\alpha^2$, $s_3^{(\alpha)}=5\alpha-2\alpha^2$, $s_4^{(\alpha)}=10-9\alpha+2\alpha^2$. Tedy $$\min_{\alpha \in (0,1 \rangle} \{ s_1 (\alpha), s_2 (\alpha), s_3 (\alpha), s_4 (\alpha) \}=s_1 (\alpha)=\alpha^2 +2\alpha$$
+$$\max_{\alpha \in (0,1 \rangle} \{ s_1 (\alpha), s_2 (\alpha), s_3 (\alpha), s_4 (\alpha) \}=s_4 (\alpha)=10-9\alpha+2\alpha^2$$ Pro $\alpha \in (0,1 \rangle$platí $\alpha^2 +2\alpha \in (0,3 \rangle$ a $10-9\alpha+2\alpha^2 \in \langle 0,3)$. Jelikož $\mu_D (y)=\max_{z \in D^{(\alpha)}} \alpha$, řešíme roznice $z=\alpha^2 +2\alpha$ (řešení: $\alpha = -1 + \sqrt{1+z}$) a $z=10-9\alpha+2\alpha^2$ (řešení: $\alpha=\frac{9-\sqrt{1+8z}}{4}$).
+Získaná funkce příslušnosti je:
+$\mu_D (z)= -1 + \sqrt{1+z}; z \in \langle 0,3$ $\mu_D (z)=  \frac{9-\sqrt{1+8z}}{4} z \in zz(3,10)$ a $\mu_D (z)=0;z \in \text{jinde}$
